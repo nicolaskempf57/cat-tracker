@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% if title %}
+        <title>{{ title }} - Cat Tracker</title>
+        {% else %}
+        <title>{{ _('Welcome to Cat Tracker!') }}</title>
+        {% endif %}
+        {% assets 'main_css' %}
+      <link rel="stylesheet" href="{{ ASSET_URL }}">
+    {% endassets %}
+    </head>
+    <body>
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <div class="relative bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
+          <div class="flex justify-start lg:w-0 lg:flex-1">
+            <a href="{{url_for('index')}}">
+              <span class="sr-only">Cat-Tracker</span>
+              <img class="h-8 w-auto sm:h-10" src="{{url_for('static', filename='cat.svg')}}" alt="">
+            </a>
+          </div>
+          <div class="-mr-2 -my-2 md:hidden">
+            <button type="button" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500" aria-expanded="false">
+              <span class="sr-only">Open menu</span>
+              <!-- Heroicon name: outline/menu -->
+              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+          <nav class="hidden md:flex space-x-10">
+            <a href="#" class="text-base font-medium text-gray-500 hover:text-gray-900">
+              Pricing
+            </a>
+            <a href="#" class="text-base font-medium text-gray-500 hover:text-gray-900">
+              Docs
+            </a>
+          </nav>
+          <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+              {% if current_user.is_anonymous %}
+                <a href="{{ url_for('login') }}" class="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900">
+                Sign in
+                </a>
+                <a href="{{ url_for('register') }}" class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700">
+                  Sign up
+                </a>
+                {% else %}
+                <a href="{{ url_for('user', username=current_user.username) }}" class="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900">
+                    Profile
+                </a>
+                <a href="{{ url_for('logout') }}" class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700">
+                    {{_('Logout')}}
+                </a>
+                {% endif %}
+          </div>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="relative bg-green-600">
+          <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+            <div class="pr-16 sm:text-center sm:px-16">
+                {% for message in messages %}
+                <p class="font-medium text-white">
+                    <span>
+                      {{message}}
+                    </span>
+                </p>
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    </body>
+</html>
