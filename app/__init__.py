@@ -7,7 +7,6 @@ from flask_babel import Babel
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from pint import UnitRegistry
 from flask_assets import Bundle, Environment
 
 app = Flask(__name__)
@@ -16,22 +15,24 @@ babel = Babel(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
-login.login_view = 'login'
+login.login_view = 'auth.login'
 
 css = Bundle('src/main.css', output='dist/main.css', filters='postcss')
-
 assets = Environment(app)
 assets.register('main_css', css)
 css.build()
+from app.errors import bp as errors_bp
+app.register_blueprint(errors_bp)
+from app.auth import bp as auth_bp
+app.register_blueprint(auth_bp)
+from app.core import bp as core_bp
+app.register_blueprint(core_bp)
 
 
 @babel.localeselector
 def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
-
-ureg = UnitRegistry()
-Q_ = ureg.Quantity
 
 if not app.debug:
     if app.config['MAIL_SERVER']:
@@ -59,4 +60,4 @@ if not app.debug:
     app.logger.info('Cat-Tracker startup')
 
 
-from app import routes, models, errors
+from app import models
